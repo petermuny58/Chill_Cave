@@ -1,9 +1,11 @@
 // components/Header.tsx
 import React, { useEffect, useRef, useState } from 'react';
+import { usePageContext } from 'vike-react/usePageContext';
 import { searchAnime, fetchRandomAnime, displayTitle, AnimeItem } from '../services';
 import { useTitleLang } from '../context/TitleLangContext';
 
 export default function Header() {
+  const pageContext = usePageContext();
   const { titleLang, toggleTitleLang } = useTitleLang();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<AnimeItem[]>([]);
@@ -11,7 +13,7 @@ export default function Header() {
   const [searching, setSearching] = useState(false);
   const [shuffling, setShuffling] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
-  const boxRef = useRef<HTMLDivElement>(null);
+  const boxRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -98,9 +100,26 @@ export default function Header() {
       </button>
 
       <a href="/" className="site-header__logo">
-        <span className="site-header__logo-a">Anim</span>
-        <span className="site-header__logo-b">Anime</span>
+        <span className="site-header__logo-a">Chill</span>
+        <span className="site-header__logo-b">Cave</span>
       </a>
+
+      <nav className="site-header__nav">
+        <a
+          href="/"
+          className={`site-header__nav-link ${pageContext.urlPathname === '/' ? 'is-active' : ''}`}
+        >
+          Anime
+        </a>
+        <a
+          href="/browse"
+          className={`site-header__nav-link ${
+            pageContext.urlPathname.startsWith('/browse') ? 'is-active' : ''
+          }`}
+        >
+          Movies &amp; TV
+        </a>
+      </nav>
 
       <form
         className="site-header__search"

@@ -101,20 +101,6 @@ body {
   font-size: 0.9rem;
 }
 .site-header__search-icon { color: var(--text-dim); flex-shrink: 0; }
-.site-header__search-submit {
-  background: var(--orange);
-  border: none;
-  color: #fff;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  cursor: pointer;
-  padding: 8px 14px;
-  border-radius: 999px;
-  flex-shrink: 0;
-  transition: background 0.2s;
-}
-.site-header__search-submit:hover { background: var(--orange-hover); }
 .site-header__filter {
   display: flex;
   align-items: center;
@@ -131,13 +117,6 @@ body {
   flex-shrink: 0;
 }
 .site-header__dropdown {
-  list-style: none;
-  margin: 0;
-  padding: 6px;
-  max-height: 320px;
-  overflow-y: auto;
-}
-.site-header__dropdown-panel {
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
@@ -145,33 +124,12 @@ body {
   background: var(--bg-raised);
   border: 1px solid var(--border);
   border-radius: 10px;
-  z-index: 60;
-  overflow: hidden;
-}
-.site-header__dropdown-status {
+  list-style: none;
   margin: 0;
-  padding: 14px 16px;
-  color: var(--text-dim);
-  font-size: 0.85rem;
-}
-.site-header__dropdown-all {
-  width: 100%;
-  background: none;
-  border: none;
-  border-top: 1px solid var(--border);
-  color: var(--orange);
-  font-size: 0.8rem;
-  font-weight: 700;
-  padding: 10px 14px;
-  cursor: pointer;
-  text-align: left;
-}
-.site-header__dropdown-all:hover { background: rgba(255, 255, 255, 0.04); }
-.site-header__dropdown a.is-active { background: rgba(242, 99, 42, 0.12); }
-.site-header__dropdown-score {
-  color: var(--text-dim);
-  font-size: 0.75rem;
-  flex-shrink: 0;
+  padding: 6px;
+  max-height: 340px;
+  overflow-y: auto;
+  z-index: 60;
 }
 .site-header__dropdown a {
   display: flex;
@@ -569,33 +527,6 @@ body {
 
 .loading-state, .error-state { padding: 80px 24px; text-align: center; color: var(--text-dim); }
 
-/* ---------- Search page ---------- */
-
-.search-page { padding-top: 24px; }
-.search-page__header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-.search-page__count {
-  margin: 0;
-  color: var(--text-dim);
-  font-size: 0.9rem;
-}
-.search-page__hint,
-.search-page__empty {
-  color: var(--text-dim);
-  font-size: 0.95rem;
-}
-.search-page__home-link {
-  color: var(--orange);
-  text-decoration: none;
-  font-weight: 600;
-}
-.search-page__home-link:hover { text-decoration: underline; }
-
 /* ---------- Responsive ---------- */
 
 @media (max-width: 900px) {
@@ -611,7 +542,7 @@ body {
   .site-header { padding: 10px 12px; gap: 8px; }
   .site-header__logo { font-size: 1rem; }
   .site-header__search { padding: 6px 4px 6px 10px; }
-  .site-header__search-submit { padding: 7px 10px; font-size: 0.7rem; }
+  .site-header__filter-label { display: none; }
 }
 
 @media (max-width: 480px) {
@@ -769,4 +700,188 @@ body {
 @media (max-width: 700px) {
   .episode-grid { grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); gap: 6px; }
   .watch-page__title { font-size: 1.1rem; }
+}
+
+/* ---------- Nav links (Header) ---------- */
+
+.site-header__nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.site-header__nav-link {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.site-header__nav-link:hover { color: var(--text); background: var(--bg-raised); }
+.site-header__nav-link.is-active { color: var(--orange); }
+
+/* ---------- Browse page (Netflix-style rows) ---------- */
+
+.browse-page .hero-banner { margin-bottom: 8px; }
+
+.media-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 0 8px;
+  margin-top: 24px;
+}
+
+.media-row__title { font-size: 1.1rem; letter-spacing: 0.04em; margin: 0 0 12px; padding: 0 8px; }
+.media-row__viewport { position: relative; }
+.media-row__track {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 4px 8px 12px;
+  scrollbar-width: none;
+}
+.media-row__track::-webkit-scrollbar { display: none; }
+.media-row__item { flex: 0 0 160px; }
+
+.media-row__nav {
+  position: absolute;
+  top: 0;
+  bottom: 12px;
+  width: 40px;
+  border: none;
+  color: var(--text);
+  font-size: 1.6rem;
+  cursor: pointer;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.media-row__nav--left { left: 0; background: linear-gradient(90deg, var(--bg) 20%, transparent); }
+.media-row__nav--right {
+  right: 0;
+  background: linear-gradient(270deg, var(--bg) 20%, transparent);
+  justify-content: flex-end;
+}
+
+.media-card { display: block; text-decoration: none; color: inherit; }
+.media-card__poster-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--bg-raised);
+  transition: transform 0.2s ease;
+}
+.media-card:hover .media-card__poster-wrapper {
+  transform: scale(1.06);
+  z-index: 2;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
+}
+.media-card__poster-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.media-card__poster-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8px;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+.media-card__overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 8px;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.9));
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.media-card:hover .media-card__overlay { opacity: 1; }
+.media-card__title {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.media-card__meta { display: flex; gap: 6px; font-size: 0.65rem; color: var(--text-dim); }
+.media-card__rating { color: #ffd166; }
+
+/* ---------- Media detail page (movies/TV) ----------
+   Same layout as .anime-detail — grouped selectors so both get the
+   same rules without duplicating every property block. */
+
+.anime-detail__banner, .media-detail__banner {
+  position: relative;
+  height: 320px;
+  background-size: cover;
+  background-position: center;
+}
+.anime-detail__banner-scrim, .media-detail__banner-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(12, 12, 15, 0) 0%, rgba(12, 12, 15, 1) 100%);
+}
+.anime-detail__body, .media-detail__body {
+  max-width: 1100px;
+  margin: -80px auto 0;
+  padding: 0 24px 48px;
+  position: relative;
+  display: flex;
+  gap: 32px;
+}
+.anime-detail__poster, .media-detail__poster {
+  width: 220px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+.anime-detail__info, .media-detail__info { flex: 1; min-width: 0; padding-top: 90px; }
+.anime-detail__back, .media-detail__back {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.85rem;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+.anime-detail__title, .media-detail__title { font-size: 2rem; margin: 0 0 4px; font-weight: 800; }
+.anime-detail__subtitle, .media-detail__subtitle { color: var(--text-dim); margin: 0 0 16px; font-size: 1rem; }
+.anime-detail__badges, .media-detail__badges {
+  display: flex; gap: 8px; align-items: center; margin-bottom: 16px; flex-wrap: wrap;
+}
+.anime-detail__genres, .media-detail__genres {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
+}
+.anime-detail__genre, .media-detail__genre {
+  background: var(--bg-raised);
+  color: var(--text-dim);
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+.anime-detail__description, .media-detail__description {
+  color: var(--text);
+  line-height: 1.7;
+  white-space: pre-line;
+  max-width: 720px;
+  margin-bottom: 24px;
+}
+.anime-detail__meta, .media-detail__meta { display: flex; gap: 32px; flex-wrap: wrap; }
+
+@media (max-width: 700px) {
+  .anime-detail__body, .media-detail__body { flex-direction: column; margin-top: -60px; padding: 0 16px 32px; }
+  .anime-detail__poster, .media-detail__poster { width: 140px; }
+  .anime-detail__info, .media-detail__info { padding-top: 0; }
+  .anime-detail__title, .media-detail__title { font-size: 1.4rem; }
+
+  .media-row__item { flex: 0 0 120px; }
 }
