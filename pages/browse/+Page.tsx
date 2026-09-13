@@ -11,6 +11,7 @@ import {
 } from '../../movies';
 import MediaHero from '../../components/MediaHero';
 import MediaRow from '../../components/MediaRow';
+import FzDownloadSection from '../../components/FzDownloadSection';
 
 // Stable, well-known TMDB genre ids — resolving these by name would just
 // be an extra request for values that don't change.
@@ -66,12 +67,17 @@ export default function Page() {
   return (
     <main className="catalog-container browse-page">
       {loading ? (
-        <div className="loading-state">Loading movies & series…</div>
+        <div className="loading-state">Loading movies &amp; series…</div>
       ) : error ? (
         <div className="error-state">Couldn't reach TMDB: {error}</div>
       ) : (
         <>
           <MediaHero slides={trending.slice(0, 8)} />
+          
+          <div style={{ padding: '0 24px' }}>
+            <FzDownloadSection standalone={true} />
+          </div>
+
           <div className="media-rows">
             <MediaRow title="Popular Movies" items={popularMovies} />
             <MediaRow title="Popular Series" items={popularTV} />

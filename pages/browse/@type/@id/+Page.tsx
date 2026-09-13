@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { usePageContext } from 'vike-react/usePageContext';
 import { fetchMediaDetail, backdropUrl, posterUrl, MediaDetail, MediaType } from '../../../../movies';
+import FzDownloadSection from '../../../../components/FzDownloadSection';
 
 export default function Page() {
   const pageContext = usePageContext();
@@ -101,6 +102,8 @@ export default function Page() {
               <span className="hero-banner__stat-value">{year}</span>
             </div>
           </div>
+
+          <FzDownloadSection initialTitle={item.title} />
         </div>
       </div>
     </main>

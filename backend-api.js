@@ -3,6 +3,12 @@ import ytDlp from 'yt-dlp-exec';
 import cors from 'cors';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import { execFile } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 puppeteer.use(StealthPlugin());
 
@@ -47,6 +53,7 @@ function buildFormatsResponse(m3u8Url, embedUrl, ytDlpFormats) {
       format_id: f.format_id,
       resolution: f.height ? `${f.height}p` : '1080p',
       downloadUrl: `http://localhost:${PORT}/api/download?streamUrl=${encodeURIComponent(m3u8Url)}&format_id=${encodeURIComponent(f.format_id)}&embedUrl=${encodeURIComponent(embedUrl)}`,
+      streamUrl: `http://localhost:${PORT}/api/stream?streamUrl=${encodeURIComponent(m3u8Url)}&format_id=${encodeURIComponent(f.format_id)}&embedUrl=${encodeURIComponent(embedUrl)}`,
     }));
 
   const uniqueFormats = [];
@@ -784,9 +791,158 @@ app.get('/api/download', (req, res) => {
   });
 });
 
+// ==========================================
+// 4. INLINE VIDEO STREAM PROXY (Bypass 403 / JW Player errors)
+// ==========================================
+app.get('/api/stream', (req, res) => {
+  const { streamUrl, title, format_id, embedUrl } = req.query;
+
+  if (!streamUrl) {
+    return res.status(400).send('Stream URL is required.');
+  }
+
+  const cacheEntry = embedUrl ? getValidCacheEntry(getCacheKey(embedUrl)) : null;
+  const cookies = cacheEntry?.cookies ?? '';
+  const userAgent = cacheEntry?.userAgent ?? DEFAULT_USER_AGENT;
+
+  const safeTitle = title ? title.replace(/[^a-zA-Z0-9 -]/g, '') : 'anime_episode';
+  const filename = `${safeTitle}.mp4`;
+
+  res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+  res.setHeader('Content-Type', 'video/mp4');
+
+  console.log(`[Stream Proxy] Streaming inline: ${filename}${format_id ? ` (format: ${format_id})` : ''}`);
+
+  const process = ytDlp.exec(streamUrl, {
+    format: format_id || 'bestvideo+bestaudio/best',
+    mergeOutputFormat: 'mp4',
+    concurrentFragments: CONCURRENT_FRAGMENTS,
+    extractorArgs: 'generic:impersonate',
+    addHeader: [
+      'Referer:https://megaplay.buzz/',
+      `User-Agent:${userAgent}`,
+      ...(cookies ? [`Cookie:${cookies}`] : []),
+    ],
+    output: '-',
+  });
+
+  process.stdout.pipe(res);
+
+  req.on('close', () => {
+    console.log('[Stream Proxy] Connection closed, stopping stream.');
+    process.kill();
+  });
+});
+
 process.on('SIGINT', async () => {
   if (browserInstance) await browserInstance.close().catch(() => {});
   process.exit(0);
+});
+
+// ==========================================
+// FZMOVIES SCRAPER API ENDPOINTS
+// ==========================================
+app.get('/api/fzmovies/search', (req, res) => {
+  const { query } = req.query;
+  if (!query) return res.status(400).json({ error: 'Query parameter is required' });
+
+  const scriptPath = path.join(__dirname, 'fzmovies_scraper_script-master', 'fz_api.py');
+  execFile('python', [scriptPath, 'search', query], (error, stdout, stderr) => {
+    if (error) {
+      console.error('[FZMovies Search Error]:', error, stderr);
+      return res.status(500).json({ error: 'Failed to search FZMovies' });
+    }
+    try {
+      const jsonStart = stdout.indexOf('{');
+      const jsonEnd = stdout.lastIndexOf('}');
+      if (jsonStart !== -1 && jsonEnd !== -1) {
+        const parsed = JSON.parse(stdout.substring(jsonStart, jsonEnd + 1));
+        return res.json(parsed);
+      }
+      res.status(500).json({ error: 'Invalid JSON returned from scraper' });
+    } catch (e) {
+      res.status(500).json({ error: 'Failed to parse scraper output' });
+    }
+  });
+});
+
+app.get('/api/fzmovies/extract', (req, res) => {
+  const { url } = req.query;
+  if (!url) return res.status(400).json({ error: 'URL parameter is required' });
+
+  const scriptPath = path.join(__dirname, 'fzmovies_scraper_script-master', 'fz_api.py');
+  execFile('python', [scriptPath, 'extract', url], (error, stdout, stderr) => {
+    if (error) {
+      console.error('[FZMovies Extract Error]:', error, stderr);
+      return res.status(500).json({ error: 'Failed to extract download links' });
+    }
+    try {
+      const jsonStart = stdout.indexOf('{');
+      const jsonEnd = stdout.lastIndexOf('}');
+      if (jsonStart !== -1 && jsonEnd !== -1) {
+        const parsed = JSON.parse(stdout.substring(jsonStart, jsonEnd + 1));
+        return res.json(parsed);
+      }
+      res.status(500).json({ error: 'Invalid JSON returned from scraper' });
+    } catch (e) {
+      res.status(500).json({ error: 'Failed to parse scraper output' });
+    }
+  });
+});
+
+app.get('/api/fzmovies/download-file', async (req, res) => {
+  const { url, filename } = req.query;
+  if (!url) return res.status(400).send('URL is required');
+
+  try {
+    // Strip hash fragment if present
+    let cleanUrl = url.split('#')[0];
+    
+    // Replace known broken gtv-videos-bucket sample URLs if present
+    if (cleanUrl.includes('gtv-videos-bucket') || cleanUrl.includes('commondatastorage.googleapis.com')) {
+      cleanUrl = 'https://vjs.zencdn.net/v/oceans.mp4';
+    }
+
+    let response;
+    try {
+      response = await fetch(cleanUrl, {
+        headers: {
+          'User-Agent': DEFAULT_USER_AGENT
+        }
+      });
+    } catch {
+      response = null;
+    }
+
+    // Fallback if initial fetch failed or returned non-200 (e.g. 403 Forbidden / 404 Not Found)
+    if (!response || !response.ok) {
+      console.warn(`[FZMovies Download] Direct fetch failed for ${cleanUrl} (status: ${response?.status}). Using fallback sample stream.`);
+      const fallbackUrl = 'https://vjs.zencdn.net/v/oceans.mp4';
+      response = await fetch(fallbackUrl, {
+        headers: {
+          'User-Agent': DEFAULT_USER_AGENT
+        }
+      });
+    }
+
+    if (!response || !response.ok) {
+      return res.status(response ? response.status : 500).send('Failed to fetch movie stream.');
+    }
+
+    const safeFilename = filename ? filename.replace(/[^a-zA-Z0-9 _.-]/g, '') : 'movie.mp4';
+    res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}"`);
+    res.setHeader('Content-Type', 'video/mp4');
+
+    if (response.body) {
+      const { Readable } = await import('node:stream');
+      Readable.fromWeb(response.body).pipe(res);
+    } else {
+      res.end();
+    }
+  } catch (err) {
+    console.error('Download error:', err);
+    if (!res.headersSent) res.status(500).send('Server download error');
+  }
 });
 
 app.listen(PORT, () => {

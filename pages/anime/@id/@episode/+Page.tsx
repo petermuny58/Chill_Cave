@@ -9,6 +9,7 @@ interface VideoFormat {
   format_id: string;
   resolution: string;
   downloadUrl: string;
+  streamUrl?: string;
 }
 
 export default function Page() {
@@ -22,7 +23,13 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // New state variables for the dynamic download button
+  // Player mode: 'embed' (iframe) or 'proxied' (HTML5 video player via backend stealth proxy)
+  const [playerMode, setPlayerMode] = useState<'embed' | 'proxied'>('embed');
+  const [proxiedStreamUrl, setProxiedStreamUrl] = useState<string | null>(null);
+  const [loadingProxy, setLoadingProxy] = useState(false);
+  const [proxyError, setProxyError] = useState<string | null>(null);
+
+  // State variables for the dynamic download button
   const [isExtracting, setIsExtracting] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [extractError, setExtractError] = useState<string | null>(null);
@@ -65,11 +72,15 @@ export default function Page() {
     };
   }, [anilistId, episodeNumber]);
 
-  // Reset the download section if the user switches audio tracks or episodes
+  // Reset states if user switches audio tracks or episodes
   useEffect(() => {
     setExtractError(null);
     setIsExtracting(false);
     setIsDownloading(false);
+    setPlayerMode('embed');
+    setProxiedStreamUrl(null);
+    setLoadingProxy(false);
+    setProxyError(null);
   }, [audio, episodeNumber]);
 
   // Silent background prefetch — warms the stream cache while the user watches
@@ -101,6 +112,40 @@ export default function Page() {
   // Active stream URL depends on chosen sub/dub audio option
   const embedUrl = episode.embed_url[audio] ?? episode.embed_url.sub ?? episode.embed_url.dub;
   const title = displayTitle(anime);
+
+  const switchToProxiedPlayer = async () => {
+    setPlayerMode('proxied');
+    if (proxiedStreamUrl) return;
+
+    if (!embedUrl) return;
+
+    setLoadingProxy(true);
+    setProxyError(null);
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/extract-formats?url=${encodeURIComponent(embedUrl)}`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to extract stream for proxy player.');
+      }
+
+      const best = data.formats?.[0] as VideoFormat | undefined;
+      const streamEndpoint = best?.streamUrl || (best?.downloadUrl ? best.downloadUrl.replace('/api/download?', '/api/stream?') : null);
+
+      if (!streamEndpoint) {
+        throw new Error('No proxy stream URL could be generated.');
+      }
+
+      const fileTitle = `${title} - Ep ${episodeNumber} (${audio.toUpperCase()})`;
+      setProxiedStreamUrl(`${streamEndpoint}&title=${encodeURIComponent(fileTitle)}`);
+    } catch (err) {
+      console.error('Proxy extraction error:', err);
+      setProxyError(err instanceof Error ? err.message : 'Error extracting stream for direct player.');
+    } finally {
+      setLoadingProxy(false);
+    }
+  };
 
   const handleDownload = async () => {
     if (!embedUrl) return;
@@ -137,18 +182,104 @@ export default function Page() {
 
   return (
     <main className="watch-page">
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600 }}>Player Source:</span>
+        <button
+          type="button"
+          onClick={() => setPlayerMode('embed')}
+          style={{
+            padding: '6px 14px',
+            borderRadius: '6px',
+            fontSize: '13px',
+            fontWeight: 600,
+            border: 'none',
+            cursor: 'pointer',
+            backgroundColor: playerMode === 'embed' ? '#2563eb' : '#1e293b',
+            color: playerMode === 'embed' ? '#ffffff' : '#94a3b8',
+          }}
+        >
+          🌐 Embed Iframe
+        </button>
+        <button
+          type="button"
+          onClick={switchToProxiedPlayer}
+          style={{
+            padding: '6px 14px',
+            borderRadius: '6px',
+            fontSize: '13px',
+            fontWeight: 600,
+            border: 'none',
+            cursor: 'pointer',
+            backgroundColor: playerMode === 'proxied' ? '#10b981' : '#1e293b',
+            color: playerMode === 'proxied' ? '#ffffff' : '#94a3b8',
+          }}
+        >
+          ⚡ Direct Server Player (Bypass 403)
+        </button>
+      </div>
+
       <div className="watch-page__player">
-        {embedUrl ? (
+        {playerMode === 'embed' && embedUrl ? (
           <iframe
             src={embedUrl}
             allowFullScreen
             frameBorder={0}
             title={`${title} — Episode ${episodeNumber}`}
           />
+        ) : playerMode === 'proxied' ? (
+          loadingProxy ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#94a3b8', gap: '12px', minHeight: '300px' }}>
+              <div style={{
+                width: '32px', height: '32px', border: '3px solid #10b981',
+                borderTopColor: 'transparent', borderRadius: '50%',
+                animation: 'spin 1s linear infinite'
+              }} />
+              <span>Bypassing 403 restrictions and loading stealth proxy player…</span>
+            </div>
+          ) : proxyError ? (
+            <div className="error-state" style={{ padding: '24px', textAlign: 'center' }}>
+              <p style={{ color: '#fca5a5', marginBottom: '12px' }}>{proxyError}</p>
+              <button
+                onClick={switchToProxiedPlayer}
+                style={{ padding: '8px 16px', backgroundColor: '#ef4444', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+              >
+                Retry Direct Player
+              </button>
+            </div>
+          ) : proxiedStreamUrl ? (
+            <video
+              src={proxiedStreamUrl}
+              controls
+              autoPlay
+              style={{ width: '100%', height: '100%', borderRadius: '12px', backgroundColor: '#000' }}
+            />
+          ) : null
         ) : (
           <div className="error-state">No embed available for this episode.</div>
         )}
       </div>
+
+      {playerMode === 'embed' && (
+        <div style={{ marginTop: '8px', fontSize: '13px', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <span>⚠️ Seeing JW Player Error 232403 or 403 Forbidden on embed?</span>
+          <button
+            type="button"
+            onClick={switchToProxiedPlayer}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#3b82f6',
+              cursor: 'pointer',
+              fontSize: '13px',
+              fontWeight: 600,
+              padding: 0,
+              textDecoration: 'underline'
+            }}
+          >
+            Switch to Direct Server Player (Bypass 403)
+          </button>
+        </div>
+      )}
 
       <div className="watch-page__meta">
         <a className="anime-detail__back" href={`/anime/${anime.id}`}>

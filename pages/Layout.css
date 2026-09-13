@@ -100,7 +100,12 @@ body {
   color: var(--text);
   font-size: 0.9rem;
 }
-.site-header__search-icon { color: var(--text-dim); flex-shrink: 0; }
+
+.site-header__search-icon {
+   color: var(--text-dim);
+   flex-shrink: 0; 
+  }
+
 .site-header__filter {
   display: flex;
   align-items: center;
@@ -116,6 +121,7 @@ body {
   padding: 6px 10px;
   flex-shrink: 0;
 }
+
 .site-header__dropdown {
   position: absolute;
   top: calc(100% + 8px);
@@ -131,6 +137,7 @@ body {
   overflow-y: auto;
   z-index: 60;
 }
+
 .site-header__dropdown a {
   display: flex;
   align-items: center;
@@ -141,7 +148,11 @@ body {
   text-decoration: none;
   font-size: 0.85rem;
 }
-.site-header__dropdown a:hover { background: rgba(255, 255, 255, 0.06); }
+
+.site-header__dropdown a:hover {
+   background: rgba(255, 255, 255, 0.06); 
+}
+
 .site-header__dropdown img {
   width: 32px;
   height: 44px;
@@ -149,6 +160,7 @@ body {
   border-radius: 4px;
   flex-shrink: 0;
 }
+
 .site-header__dropdown-title {
   flex: 1;
   min-width: 0;
@@ -156,6 +168,7 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .site-header__icon-btn,
 .site-header__avatar {
   background: var(--bg-raised);
@@ -168,6 +181,7 @@ body {
   flex-shrink: 0;
   font-size: 1rem;
 }
+
 .site-header__icon-btn.is-spinning { opacity: 0.55; }
 .site-header__lang-toggle {
   display: flex;
@@ -178,6 +192,7 @@ body {
   padding: 0;
   flex-shrink: 0;
 }
+
 .site-header__lang-toggle span {
   padding: 8px 12px;
   font-size: 0.75rem;
@@ -185,6 +200,7 @@ body {
   color: var(--text-dim);
   background: var(--bg-raised);
 }
+
 .site-header__lang-toggle span.is-active {
   background: var(--orange);
   color: #fff;
@@ -202,6 +218,7 @@ body {
   border-radius: 0 0 12px 12px;
   overflow: hidden;
 }
+
 .hero-banner--empty {
   display: flex;
   align-items: center;
@@ -209,6 +226,7 @@ body {
   color: var(--text-dim);
   min-height: 320px;
 }
+
 .hero-banner__scrim {
   position: absolute;
   inset: 0;
@@ -220,30 +238,35 @@ body {
     rgba(10, 10, 12, 0) 100%
   );
 }
+
 .hero-banner__content {
   position: relative;
   z-index: 1;
   padding: 40px 48px;
   max-width: 640px;
 }
+
 .hero-banner__title {
   font-size: 2.4rem;
   line-height: 1.15;
   margin: 0 0 12px;
   font-weight: 800;
 }
+
 .hero-banner__badges {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 14px;
 }
+
 .hero-banner__type {
   font-size: 0.8rem;
   color: var(--text-dim);
   border: none;
   padding: 0;
 }
+
 .hero-banner__desc {
   color: var(--text-dim);
   font-size: 0.95rem;
@@ -254,6 +277,7 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
 .hero-banner__stats {
   display: flex;
   gap: 28px;
@@ -263,6 +287,7 @@ body {
   margin-bottom: 20px;
   width: fit-content;
 }
+
 .hero-banner__stat-label {
   display: block;
   font-size: 0.7rem;
@@ -270,11 +295,13 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+
 .hero-banner__stat-value {
   display: block;
   font-weight: 700;
   font-size: 1rem;
 }
+
 .hero-banner__actions { display: flex; gap: 12px; }
 .btn {
   border: none;
@@ -284,6 +311,7 @@ body {
   font-size: 0.9rem;
   letter-spacing: 0.02em;
 }
+
 .btn--watch {
   background: var(--orange);
   color: #fff;
@@ -292,7 +320,11 @@ body {
   display: inline-block;
   transition: background 0.15s ease;
 }
-.btn--watch:hover { background: var(--orange-hover); }
+
+.btn--watch:hover { 
+  background: var(--orange-hover);
+ }
+
 .btn--bookmark {
   background: var(--bg-raised);
   color: var(--text);
@@ -301,7 +333,12 @@ body {
   border-radius: 6px;
   font-size: 1.1rem;
 }
-.btn--bookmark.is-active { background: var(--green); color: #06210f; }
+
+.btn--bookmark.is-active {
+   background: var(--green);
+    color: #06210f; 
+  }
+
 .hero-banner__nav {
   position: absolute;
   bottom: 24px;
@@ -312,6 +349,7 @@ body {
   gap: 10px;
   color: var(--text-dim);
 }
+
 .hero-banner__nav button {
   background: rgba(0, 0, 0, 0.5);
   border: none;
@@ -323,7 +361,10 @@ body {
   cursor: pointer;
 }
 
+
 /* ---------- Share / promo bar ---------- */
+
+
 
 .share-bar {
   display: flex;
@@ -336,7 +377,13 @@ body {
   flex-wrap: wrap;
   gap: 12px;
 }
-.share-bar__left { display: flex; align-items: center; gap: 12px; }
+
+.share-bar__left {
+   display: flex; 
+   align-items: center;
+    gap: 12px; 
+  }
+
 .share-bar__avatar {
   font-size: 1.6rem;
   width: 44px;
@@ -348,8 +395,20 @@ body {
   border-radius: 50%;
   flex-shrink: 0;
 }
-.share-bar__title { margin: 0; color: var(--green); font-weight: 700; font-size: 0.95rem; }
-.share-bar__subtitle { margin: 0; color: var(--text-dim); font-size: 0.8rem; }
+
+.share-bar__title {
+   margin: 0; 
+   color: var(--green); 
+   font-weight: 700; 
+   font-size: 0.95rem;
+   }
+
+.share-bar__subtitle {
+   margin: 0; 
+   color: var(--text-dim); 
+   font-size: 0.8rem;
+}
+
 .share-bar__btn {
   background: var(--orange);
   color: #fff;
@@ -362,7 +421,9 @@ body {
   flex-shrink: 0;
 }
 
+
 /* ---------- Content layout: grid + sidebar ---------- */
+
 
 .content-grid {
   display: grid;
@@ -380,9 +441,18 @@ body {
   gap: 12px;
   margin-bottom: 16px;
 }
-.section-title { font-size: 1.1rem; letter-spacing: 0.04em; margin: 0; }
 
-.filter-tabs { display: flex; gap: 16px; }
+.section-title {
+   font-size: 1.1rem; 
+   letter-spacing: 0.04em;
+    margin: 0;
+   }
+
+.filter-tabs {
+   display: flex;
+    gap: 16px; 
+  }
+
 .filter-tabs button {
   background: none;
   border: none;
@@ -392,6 +462,7 @@ body {
   cursor: pointer;
   padding: 4px 0;
 }
+
 .filter-tabs button.is-active {
   color: var(--orange);
   border-bottom: 2px solid var(--orange);
@@ -403,7 +474,13 @@ body {
   justify-content: start;
   gap: 16px;
 }
-.anime-card { display: block; color: inherit; text-decoration: none; }
+
+.anime-card {
+   display: block; 
+   color: inherit;
+    text-decoration: none; 
+  }
+
 .poster-wrapper {
   width: 100%;
   max-width: 170px;
@@ -412,6 +489,7 @@ body {
   aspect-ratio: 2 / 3;
   background: var(--bg-raised);
 }
+
 .poster-wrapper img {
   width: 100%;
   height: 100%;
@@ -420,7 +498,9 @@ body {
 }
 .poster-wrapper:hover img { transform: scale(1.05); }
 
+
 /* ---- Card title / meta / badges (your original rules, kept) ---- */
+
 
 .anime-card-title {
   font-size: 0.9rem;
@@ -430,26 +510,53 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
 .anime-card-meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 0.75rem;
 }
-.badge-group { display: flex; gap: 4px; }
+
+.badge-group { 
+  display: flex;
+   gap: 4px;
+   }
+
 .badge {
   padding: 2px 6px;
   border-radius: 4px;
   font-weight: bold;
   font-size: 0.65rem;
 }
-.badge-cc { border: 1px solid #8a4b4b; color: #ff7b7b; background: rgba(58, 28, 28, 0.4); }
-.badge-dub { border: 1px solid #4b8a5b; color: #7bff9b; background: rgba(28, 58, 36, 0.4); }
-.format-tag { color: #8a8d93; font-weight: bold; }
+
+.badge-cc {
+   border: 1px solid #8a4b4b;
+    color: #ff7b7b; 
+    background: rgba(58, 28, 28, 0.4);
+   }
+
+.badge-dub {
+   border: 1px solid #4b8a5b;
+    color: #7bff9b; background:
+     rgba(28, 58, 36, 0.4);
+     }
+
+.format-tag { 
+  color: #8a8d93;
+  font-weight: bold;
+ }
+
 
 /* ---------- Sidebar column: trending list + schedule widget ---------- */
 
-.sidebar-column { display: flex; flex-direction: column; gap: 20px; }
+
+
+.sidebar-column {
+   display: flex;
+    flex-direction: column;
+     gap: 20px;
+     }
 
 .trending-sidebar {
   background: var(--bg-raised);
@@ -457,7 +564,12 @@ body {
   padding: 20px;
   height: fit-content;
 }
-.trending-sidebar__heading { font-size: 1rem; margin: 0 0 16px; }
+
+.trending-sidebar__heading {
+   font-size: 1rem; 
+   margin: 0 0 16px;
+   }
+
 .trending-sidebar__list {
   list-style: none;
   margin: 0;
@@ -466,14 +578,27 @@ body {
   flex-direction: column;
   gap: 14px;
 }
+
 .trending-sidebar__item {
   display: grid;
   grid-template-columns: 20px 44px 1fr;
   gap: 10px;
   align-items: center;
 }
-.trending-sidebar__rank { color: var(--text-dim); font-weight: 700; text-align: center; }
-.trending-sidebar__thumb { width: 44px; height: 60px; object-fit: cover; border-radius: 4px; }
+
+.trending-sidebar__rank {
+   color: var(--text-dim);
+    font-weight: 700; 
+    text-align: center;
+   }
+
+.trending-sidebar__thumb {
+   width: 44px; 
+   height: 60px;
+    object-fit: cover; 
+    border-radius: 4px;
+   }
+
 .trending-sidebar__title {
   color: var(--text);
   text-decoration: none;
@@ -484,8 +609,19 @@ body {
   overflow: hidden;
 }
 
-.schedule-widget { background: var(--bg-raised); border-radius: 10px; padding: 16px; }
-.schedule-widget__days { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 14px; }
+.schedule-widget {
+   background: var(--bg-raised); 
+   border-radius: 10px;
+    padding: 16px;
+   }
+
+.schedule-widget__days { 
+  display: flex;
+   justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 14px; 
+  }
+
 .schedule-widget__day {
   background: none;
   border: none;
@@ -499,10 +635,28 @@ body {
   cursor: pointer;
   flex: 1;
 }
-.schedule-widget__day-name { font-size: 0.65rem; letter-spacing: 0.04em; }
-.schedule-widget__day-num { font-weight: 700; font-size: 0.9rem; }
-.schedule-widget__day.is-active { background: var(--orange); color: #fff; }
-.schedule-widget__list { display: flex; flex-direction: column; gap: 8px; }
+
+.schedule-widget__day-name {
+   font-size: 0.65rem;
+    letter-spacing: 0.04em; 
+  }
+
+.schedule-widget__day-num {
+   font-weight: 700;
+    font-size: 0.9rem; 
+  }
+
+.schedule-widget__day.is-active {
+   background: var(--orange); 
+   color: #fff;
+   }
+
+.schedule-widget__list {
+   display: flex;
+    flex-direction: column; 
+    gap: 8px;
+   }
+
 .schedule-widget__item {
   display: flex;
   justify-content: space-between;
@@ -513,6 +667,7 @@ body {
   padding: 6px 0;
   border-bottom: 1px solid var(--border);
 }
+
 .schedule-widget__title {
   flex: 1;
   min-width: 0;
@@ -520,14 +675,35 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.schedule-widget__ep { color: var(--text-dim); font-size: 0.75rem; flex-shrink: 0; }
-.schedule-widget__empty { color: var(--text-dim); font-size: 0.85rem; text-align: center; padding: 12px 0; }
+
+.schedule-widget__ep {
+   color: var(--text-dim);
+    font-size: 0.75rem;
+     flex-shrink: 0; 
+    }
+
+.schedule-widget__empty { 
+  color: var(--text-dim);
+   font-size: 0.85rem; 
+   text-align: center;
+    padding: 12px 0;
+   }
+
 
 /* ---------- States ---------- */
 
-.loading-state, .error-state { padding: 80px 24px; text-align: center; color: var(--text-dim); }
+
+
+.loading-state, .error-state {
+   padding: 80px 24px; 
+   text-align: center;
+    color: var(--text-dim);
+   }
+
 
 /* ---------- Responsive ---------- */
+
+
 
 @media (max-width: 900px) {
   .content-grid { grid-template-columns: 1fr; }
@@ -845,7 +1021,10 @@ body {
   border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
-.anime-detail__info, .media-detail__info { flex: 1; min-width: 0; padding-top: 90px; }
+.anime-detail__info, .media-detail__info { flex: 1; 
+  min-width: 0; 
+  padding-top: 90px;
+ }
 .anime-detail__back, .media-detail__back {
   color: var(--text-dim);
   text-decoration: none;
@@ -853,8 +1032,14 @@ body {
   display: inline-block;
   margin-bottom: 12px;
 }
-.anime-detail__title, .media-detail__title { font-size: 2rem; margin: 0 0 4px; font-weight: 800; }
-.anime-detail__subtitle, .media-detail__subtitle { color: var(--text-dim); margin: 0 0 16px; font-size: 1rem; }
+.anime-detail__title, .media-detail__title { font-size: 2rem;
+   margin: 0 0 4px; 
+   font-weight: 800;
+   }
+.anime-detail__subtitle, .media-detail__subtitle { color: var(--text-dim); 
+  margin: 0 0 16px;
+   font-size: 1rem; 
+  }
 .anime-detail__badges, .media-detail__badges {
   display: flex; gap: 8px; align-items: center; margin-bottom: 16px; flex-wrap: wrap;
 }
@@ -875,13 +1060,25 @@ body {
   max-width: 720px;
   margin-bottom: 24px;
 }
-.anime-detail__meta, .media-detail__meta { display: flex; gap: 32px; flex-wrap: wrap; }
+.anime-detail__meta, .media-detail__meta { display: flex;
+   gap: 32px;
+    flex-wrap: wrap;
+   }
 
 @media (max-width: 700px) {
-  .anime-detail__body, .media-detail__body { flex-direction: column; margin-top: -60px; padding: 0 16px 32px; }
-  .anime-detail__poster, .media-detail__poster { width: 140px; }
-  .anime-detail__info, .media-detail__info { padding-top: 0; }
-  .anime-detail__title, .media-detail__title { font-size: 1.4rem; }
+  .anime-detail__body, .media-detail__body { flex-direction: column;
+     margin-top: -60px;
+      padding: 0 16px 32px;
+     }
+  .anime-detail__poster, .media-detail__poster {
+     width: 140px;
+     }
+  .anime-detail__info, .media-detail__info { 
+    padding-top: 0;
+   }
+  .anime-detail__title, .media-detail__title {
+     font-size: 1.4rem; 
+    }
 
   .media-row__item { flex: 0 0 120px; }
 }

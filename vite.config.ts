@@ -7,10 +7,6 @@ export default defineConfig({
   server: {
     cors: true,
     allowedHosts: true,
-    hmr: {
-      protocol: 'ws',
-      host: 'localhost'
-    },
     proxy: {
       "/anilist-api": {
         target: "https://graphql.anilist.co",
